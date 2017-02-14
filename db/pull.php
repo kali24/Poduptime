@@ -63,7 +63,7 @@ while ($row = pg_fetch_assoc($result)) {
   $outputssl      = curl_exec($chss);
   $outputsslerror = curl_error($chss);
   $info           = curl_getinfo($chss, CURLINFO_CERTINFO);
-  $latency        = curl_getinfo($chss, CURLINFO_TOTAL_TIME);
+  $latency        = curl_getinfo($chss, CURLINFO_CONNECT_TIME);
   $sslexpire      = $info[0]['Expire date'] ?? null;
   curl_close($chss);
 
