@@ -18,12 +18,6 @@ $_podmin_notify    = $_GET['podmin_notify'] ?? 0;
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config.php';
 
-define('PODUPTIME', microtime(true));
-
-// Set up global DB connection.
-R::setup("pgsql:host={$pghost};dbname={$pgdb}", $pguser, $pgpass, true);
-R::testConnection() || die('Error in DB connection');
-
 try {
   $pod = R::findOne('pods', 'domain = ?', [$_domain]);
   $pod || die('domain not found');
@@ -118,14 +112,11 @@ final class PodStatus extends AbstractEnum {
     const System_Deleted = 4;
     const User_Deleted   = 5;
 }
-$test = $pod['status'];
-echo $test;
-$status = PodStatus::getKey($test);//value is blank
-$status = PodStatus::getKey(1);//works
-//  echo PodStatus::getKey($pod['status']);  // this is what i really want to do on 137
+
 ?>
   Authorized to edit <b><?php echo $_domain; ?></b> until <?php echo $pod['tokenexpire']; ?><br>
-  <form action="edit.php" method="get">
+  <form>
+    <input type="hidden" name="edit">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
     <input type="hidden" name="token" value="<?php echo $_token; ?>">
     <label>Email <input type="text" size="40" name="email" value="<?php echo $pod['email']; ?>"></label><br>
@@ -135,19 +126,22 @@ $status = PodStatus::getKey(1);//works
     <input type="submit" name="action" value="save">
   </form>
   <br>
-  <br>Your pod status is currently: <?php echo $status; ?>
+  <br>Your pod status is currently: <?php echo PodStatus::getKey((int)$pod['status']); ?>
   <br>
-  <form action="edit.php" method="get">
+  <form>
+    <input type="hidden" name="edit">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
     <input type="hidden" name="token" value="<?php echo $_token; ?>">
     <input type="submit" name="action" value="delete">
   </form>
-  <form action="edit.php" method="get">
+  <form>
+    <input type="hidden" name="edit">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
     <input type="hidden" name="token" value="<?php echo $_token; ?>">
     <input type="submit" name="action" value="pause">
   </form>
-  <form action="edit.php" method="get">
+  <form>
+    <input type="hidden" name="edit">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
     <input type="hidden" name="token" value="<?php echo $_token; ?>">
     <input type="submit" name="action" value="unpause">
