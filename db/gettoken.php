@@ -26,7 +26,7 @@ try {
 
 // Set up common variables.
 $uuid          = md5(uniqid($_domain, true));
-$link          = sprintf('https://%1$s/db/edit.php?domain=%2$s&token=%3$s', $_SERVER['HTTP_HOST'], $_domain, $uuid);
+$link          = sprintf('https://%1$s/?edit&domain=%2$s&token=%3$s', $_SERVER['HTTP_HOST'], $_domain, $uuid);
 $headers       = ['From: ' . $adminemail];
 $message_lines = [];
 

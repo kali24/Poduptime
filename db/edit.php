@@ -1,6 +1,7 @@
 <?php
 
 use RedBeanPHP\R;
+use CommerceGuys\Enum\AbstractEnum;
 
 // Required parameters.
 ($_domain = $_GET['domain'] ?? null) || die('no pod domain given');
@@ -108,7 +109,20 @@ if ('save' === $_action) {
 }
 
 // Forms.
-$statuses = array('Down', 'Up', 'Recheck', 'Paused', 'System Deleted', 'User Deleted');
+
+final class PodStatus extends AbstractEnum {
+    const Down           = 0;
+    const Up             = 1;
+    const Recheck        = 2;
+    const Paused         = 3;
+    const System_Deleted = 4;
+    const User_Deleted   = 5;
+}
+$test = $pod['status'];
+echo $test;
+$status = PodStatus::getKey($test);//value is blank
+$status = PodStatus::getKey(1);//works
+//  echo PodStatus::getKey($pod['status']);  // this is what i really want to do on 137
 ?>
   Authorized to edit <b><?php echo $_domain; ?></b> until <?php echo $pod['tokenexpire']; ?><br>
   <form action="edit.php" method="get">
@@ -121,7 +135,7 @@ $statuses = array('Down', 'Up', 'Recheck', 'Paused', 'System Deleted', 'User Del
     <input type="submit" name="action" value="save">
   </form>
   <br>
-  <br>Your pod status is currently: <?php echo $statuses[$pod['status']]; ?>
+  <br>Your pod status is currently: <?php echo $status; ?>
   <br>
   <form action="edit.php" method="get">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
