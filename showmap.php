@@ -11,6 +11,7 @@ try {
     WHERE NOT hidden
       AND lat != ''
       AND long != ''
+      AND status < 2
   ");
 } catch (\RedBeanPHP\RedException $e) {
   die('Error in SQL query: ' . $e->getMessage());

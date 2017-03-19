@@ -6,13 +6,15 @@ defined('PODUPTIME') || die();
 
 try {
   $pods = R::getAll('
-    SELECT domain, dnssec, podmin_statement, sslexpire, masterversion, shortversion, softwarename, monthsmonitored, score, signup, name, country, city, state, lat, long, uptime_alltime, active_users_halfyear, active_users_monthly, service_facebook, service_twitter, service_tumblr, service_wordpress, service_xmpp, latency, date_updated, ipv6, total_users, local_posts, comment_counts, stats_apikey, userrating
+    SELECT domain, dnssec, podmin_statement, sslexpire, masterversion, shortversion, softwarename, monthsmonitored, score, signup, name, country, city, state, lat, long, uptime_alltime, active_users_halfyear, active_users_monthly, service_facebook, service_twitter, service_tumblr, service_wordpress, service_xmpp, latency, date_updated, ipv6, total_users, local_posts, comment_counts, stats_apikey, userrating, status
     FROM pods
+    WHERE status < 3
     ORDER BY weightedscore DESC
   ');
 } catch (\RedBeanPHP\RedException $e) {
   die('Error in SQL query: ' . $e->getMessage());
 }
+$statuses = array('Down', 'Up', 'Recheck', 'Paused', 'System Deleted', 'User Deleted');
 ?>
 
 <meta property="og:title" content="<?php echo count($pods); ?> Federated Pods listed, Come see the privacy aware social networks."/>
@@ -46,7 +48,7 @@ try {
   <?php
   foreach ($pods as $pod) {
     $pod_name = htmlentities($pod['name'], ENT_QUOTES);
-    $tip = "\n Over {$pod['monthsmonitored']} months uptime is {$pod['uptime_alltime']}% and response time is {$pod['latency']}ms, last check on {$pod['date_updated']}. ";
+    $tip = "\n Over {$pod['monthsmonitored']} months uptime is {$pod['uptime_alltime']}% and response time is {$pod['latency']}ms, last check on {$pod['date_updated']} status {$statuses[$pod['status']]}. ";
 
     echo '<tr><td><a title="' . $tip . '" data-toggle="tooltip" data-placement="bottom" target="_self" href="/go.php?domain=' . $pod['domain'] . '">' . $pod['domain'] . '</a><span class="text-success" " data-toggle="tooltip" title="This site is SSL/TLS encrypted with a cert that expires: ' . $pod['sslexpire'] . '"> &#128274;</span></td>';
 

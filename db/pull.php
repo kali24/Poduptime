@@ -22,7 +22,7 @@ R::testConnection() || die('Error in DB connection');
 
 try {
   $sql = '
-    SELECT domain, score, date_created, adminrating, weight, hidden, podmin_notify, email
+    SELECT domain, score, date_created, adminrating, weight, hidden, podmin_notify, email, masterversion, shortversion
     FROM pods
   ';
 
@@ -31,6 +31,7 @@ try {
     $sql .= ' WHERE domain = ?';
     $pods = R::getAll($sql, [$_domain]);
   } elseif (PHP_SAPI === 'cli') {
+    $sql .= ' WHERE status < 3';
     $pods = R::getAll($sql);
   }
 } catch (\RedBeanPHP\RedException $e) {
@@ -46,6 +47,8 @@ foreach ($pods as $pod) {
   $hiddennow = $pod['hidden'];
   $email     = $pod['email'];
   $notify    = $pod['podmin_notify'];
+  $masterv   = $pod['masterversion'];
+  $shortv    = $pod['shortversion'];
 
   try {
     $ratings = R::getAll('
@@ -125,7 +128,7 @@ foreach ($pods as $pod) {
   }
 
   if ($jsonssl !== null) {
-    $status = 'Up';
+    $status = 1;
 
     try {
       $c                   = R::dispense('checks');
@@ -158,7 +161,7 @@ foreach ($pods as $pod) {
 
     $score        -= 1;
     $shortversion = '0.error';
-    $status       = 'Down';
+    $status       = 0;
   }
 
   _debug('Version code', $shortversion);
@@ -244,6 +247,9 @@ foreach ($pods as $pod) {
     $score = 100;
   } elseif ($score < 0) {
     $score = 0;
+    if ($masterv <> $shortv) {
+      $status = 4;
+    }
   }
   _debug('Score', $score);
   $weightedscore = ($uptime + $score - (10 - $weight)) / 2;

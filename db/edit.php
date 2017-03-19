@@ -35,8 +35,47 @@ $pod['tokenexpire'] >= date('Y-m-d H:i:s') || die('token expired');
 
 // Delete and exit.
 if ('delete' === $_action) {
-  R::trash($pod);
-  die('pod removed from DB');
+  try {
+    $pod['status']            = 5;
+        // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
+    foreach ($pod->getProperties() as $key => $value) {
+      $pod[$key] = $value;
+    }
+  R::store($pod);
+  } catch (\RedBeanPHP\RedException $e) {
+    die('Error in SQL query: ' . $e->getMessage());
+  }
+  die('pod deleted');
+}
+
+// Pause and exit.
+if ('pause' === $_action) {
+  try {
+    $pod['status']            = 3;
+        // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
+    foreach ($pod->getProperties() as $key => $value) {
+      $pod[$key] = $value;
+    }
+  R::store($pod);
+  } catch (\RedBeanPHP\RedException $e) {
+    die('Error in SQL query: ' . $e->getMessage());
+  }
+  die('pod paused');
+}
+
+// Un-Pause and exit.
+if ('unpause' === $_action) {
+  try {
+    $pod['status']            = 2;
+        // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
+    foreach ($pod->getProperties() as $key => $value) {
+      $pod[$key] = $value;
+    }
+  R::store($pod);
+  } catch (\RedBeanPHP\RedException $e) {
+    die('Error in SQL query: ' . $e->getMessage());
+  }
+  die('pod unpaused');
 }
 
 // Save and exit.
@@ -69,23 +108,34 @@ if ('save' === $_action) {
 }
 
 // Forms.
+$statuses = array('Down', 'Up', 'Recheck', 'Paused', 'System Deleted', 'User Deleted');
 ?>
   Authorized to edit <b><?php echo $_domain; ?></b> until <?php echo $pod['tokenexpire']; ?><br>
   <form action="edit.php" method="get">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
     <input type="hidden" name="token" value="<?php echo $_token; ?>">
-    <label>Email <input type="text" size="20" name="email" value="<?php echo $pod['email']; ?>"></label><br>
-    <label>Podmin Statement (You can use HTML to include links to your terms and policies and information about your pod you wish to share with users.) <br><textarea cols="100" rows="7" name="podmin_statement"><?php echo $pod['podmin_statement']; ?></textarea></label><br>
+    <label>Email <input type="text" size="40" name="email" value="<?php echo $pod['email']; ?>"></label><br>
+    <label>Podmin Statement (You can use HTML to include links to your terms and policies and information about your pod you wish to share with users.) <br><textarea cols="150" rows="10" name="podmin_statement"><?php echo $pod['podmin_statement']; ?></textarea></label><br>
     <label>Weight <input type="text" size="2" name="weight" value="<?php echo $pod['weight']; ?>"> This lets you weight your pod lower on the list if you have too much traffic coming in, 10 is the norm use lower to move down the list.</label><br>
     <label>Notify if pod falls to hidden status? <input type="checkbox" name="podmin_notify" <?php echo $pod['podmin_notify'] ? 'checked' : ''; ?> ></label><br>
     <input type="submit" name="action" value="save">
   </form>
   <br>
-  <br>
+  <br>Your pod status is currently: <?php echo $statuses[$pod['status']]; ?>
   <br>
   <form action="edit.php" method="get">
     <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
     <input type="hidden" name="token" value="<?php echo $_token; ?>">
-    WARNING: This can not be undone, you will need to add your pod again if you want back on list: <input type="submit" name="action" value="delete">
+    <input type="submit" name="action" value="delete">
+  </form>
+  <form action="edit.php" method="get">
+    <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
+    <input type="hidden" name="token" value="<?php echo $_token; ?>">
+    <input type="submit" name="action" value="pause">
+  </form>
+  <form action="edit.php" method="get">
+    <input type="hidden" name="domain" value="<?php echo $_domain; ?>">
+    <input type="hidden" name="token" value="<?php echo $_token; ?>">
+    <input type="submit" name="action" value="unpause">
   </form>
 <?php

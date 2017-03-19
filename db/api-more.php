@@ -32,7 +32,12 @@ try {
 if ($_format === 'json') {
   echo json_encode($pod);
 } else {
-  echo 'Status: ' . $pod['status'] . '<br>';
+  if ($pod['status'] === 1) {
+    echo 'Status: Up<br>';
+  }
+  if ($pod['status'] === 0) {
+    echo 'Status: Down<br>';
+  }
   echo 'Last Git Pull: ' . $pod['hgitdate'] . '<br>';
   echo 'Uptime This Month ' . $pod['uptimelast7'] . '<br>';
   echo 'Months Monitored: ' . $pod['monthsmonitored'] . '<br>';
