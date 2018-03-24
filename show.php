@@ -39,7 +39,7 @@ try {
     $verdiff  = str_replace('.', '', $pod['masterversion']) - str_replace('.', '', $pod['shortversion']);
     $pod_name = htmlentities($pod['name'], ENT_QUOTES);
     $tip      = sprintf(
-      'Uptime %2$s%% over %1$s months, score is %3$s out of 100.',
+      'Uptime %2$s%% over %1$s months.',
       $pod['monthsmonitored'],
       $pod['uptime_alltime'],
       $pod['score']

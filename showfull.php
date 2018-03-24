@@ -46,9 +46,9 @@ try {
   <?php
   foreach ($pods as $pod) {
     $pod_name = htmlentities($pod['name'], ENT_QUOTES);
-    $tip = "\n Over {$pod['monthsmonitored']} months uptime is {$pod['uptime_alltime']}% and response time is {$pod['latency']}ms, last check on {$pod['date_updated']}. ";
+    $tip = "\n Over {$pod['monthsmonitored']} months uptime is {$pod['uptime_alltime']}% and response time is {$pod['latency']}ms, last check on {$pod['date_updated']}. This site is SSL/TLS encrypted with a cert that expires: ' . $pod['sslexpire'] . '";
 
-    echo '<tr><td><a title="' . $tip . '" data-toggle="tooltip" data-placement="bottom" target="_self" href="/go.php?domain=' . $pod['domain'] . '">' . $pod['domain'] . '</a><span class="text-success" " data-toggle="tooltip" title="This site is SSL/TLS encrypted with a cert that expires: ' . $pod['sslexpire'] . '"> &#128274;</span></td>';
+    echo '<tr><td><a title="' . $tip . '" data-toggle="tooltip" data-placement="bottom" target="_self" href="/go.php?domain=' . $pod['domain'] . '">' . $pod['domain'] . '</a></td>';
 
     if ($pod['shortversion'] > $pod['masterversion']) {
       $version = $pod['shortversion'];
