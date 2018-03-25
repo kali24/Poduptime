@@ -41,8 +41,7 @@ try {
     $tip      = sprintf(
       'Uptime %2$s%% over %1$s months.',
       $pod['monthsmonitored'],
-      $pod['uptime_alltime'],
-      $pod['score']
+      $pod['uptime_alltime']
     );
     echo '<tr><td><div title="' . $tip . '" data-toggle="tooltip" data-placement="bottom"><a class="text-success url" target="_self" href="/go.php?domain=' . $pod['domain'] . '">' . $pod['domain'] . '</a></div></td>';
 
