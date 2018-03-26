@@ -16,6 +16,7 @@ define('PODUPTIME', microtime(true));
 // Set up global DB connection.
 R::setup("pgsql:host={$pghost};dbname={$pgdb}", $pguser, $pgpass, true);
 R::testConnection() || die('Error in DB connection');
+R::usePartialBeans(true);
 
 try {
   $pod = R::findOne('pods', 'domain = ?', [$_domain]);
@@ -52,11 +53,6 @@ if ($_email) {
 try {
   $pod['token']       = $uuid;
   $pod['tokenexpire'] = date('Y-m-d H:i:s', $expire);
-
-  // @todo Temporary fix! https://github.com/gabordemooij/redbean/issues/547
-  foreach ($pod->getProperties() as $key => $value) {
-    $pod[$key] = $value;
-  }
 
   R::store($pod);
 } catch (\RedBeanPHP\RedException $e) {

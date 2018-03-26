@@ -31,12 +31,8 @@ $pod['tokenexpire'] >= date('Y-m-d H:i:s') || die('token expired');
 // Delete and exit.
 if ('delete' === $_action) {
   try {
-    $pod['status']            = 5;
-        // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
-    foreach ($pod->getProperties() as $key => $value) {
-      $pod[$key] = $value;
-    }
-  R::store($pod);
+    $pod['status'] = PodStatus::User_Deleted;
+    R::store($pod);
   } catch (\RedBeanPHP\RedException $e) {
     die('Error in SQL query: ' . $e->getMessage());
   }
@@ -46,12 +42,8 @@ if ('delete' === $_action) {
 // Pause and exit.
 if ('pause' === $_action) {
   try {
-    $pod['status']            = 3;
-        // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
-    foreach ($pod->getProperties() as $key => $value) {
-      $pod[$key] = $value;
-    }
-  R::store($pod);
+    $pod['status'] = PodStatus::Paused;
+    R::store($pod);
   } catch (\RedBeanPHP\RedException $e) {
     die('Error in SQL query: ' . $e->getMessage());
   }
@@ -61,12 +53,8 @@ if ('pause' === $_action) {
 // Un-Pause and exit.
 if ('unpause' === $_action) {
   try {
-    $pod['status']            = 2;
-        // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
-    foreach ($pod->getProperties() as $key => $value) {
-      $pod[$key] = $value;
-    }
-  R::store($pod);
+    $pod['status'] = PodStatus::Recheck;
+    R::store($pod);
   } catch (\RedBeanPHP\RedException $e) {
     die('Error in SQL query: ' . $e->getMessage());
   }
@@ -83,11 +71,6 @@ if ('save' === $_action) {
     $pod['podmin_statement'] = $_podmin_statement;
     $pod['podmin_notify']    = $_podmin_notify;
 
-    // @todo Temporary fix for RedBean property handling, hope this gets fixed soon!
-    foreach ($pod->getProperties() as $key => $value) {
-      $pod[$key] = $value;
-    }
-
     R::store($pod);
   } catch (\RedBeanPHP\RedException $e) {
     die('Error in SQL query: ' . $e->getMessage());
@@ -103,15 +86,6 @@ if ('save' === $_action) {
 }
 
 // Forms.
-
-final class PodStatus extends AbstractEnum {
-    const Down           = 0;
-    const Up             = 1;
-    const Recheck        = 2;
-    const Paused         = 3;
-    const System_Deleted = 4;
-    const User_Deleted   = 5;
-}
 
 ?>
   Authorized to edit <b><?php echo $_domain; ?></b> until <?php echo $pod['tokenexpire']; ?><br>
