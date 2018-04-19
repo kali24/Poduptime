@@ -123,10 +123,12 @@ foreach ($pods as $pod) {
   $service_wordpress     = false;
   if (json_last_error() === 0) {
     (!$jsonssl->software->version) || $score += 1;
-    $service_facebook  = in_array('facebook', $jsonssl->services->outbound, true);
-    $service_twitter   = in_array('twitter', $jsonssl->services->outbound, true);
-    $service_tumblr    = in_array('tumblr', $jsonssl->services->outbound, true);
-    $service_wordpress = in_array('wordpress', $jsonssl->services->outbound, true);
+    if (is_array($jsonssl->services->outbound)) {
+      $service_facebook  = in_array('facebook', $jsonssl->services->outbound, true);
+      $service_twitter   = in_array('twitter', $jsonssl->services->outbound, true);
+      $service_tumblr    = in_array('tumblr', $jsonssl->services->outbound, true);
+      $service_wordpress = in_array('wordpress', $jsonssl->services->outbound, true);
+      }
   }
 
   if ($jsonssl !== null) {
@@ -230,7 +232,7 @@ foreach ($pods as $pod) {
   _debug('Masterversion', $masterversion);
   $masterversioncheck = explode('.',$masterversion);
   $shortversioncheck = explode('.',$shortversion);
-  if (($masterversioncheck[1] - $shortversioncheck[1]) > 1) {
+  if (($masterversioncheck[1] - $shortversioncheck[1]) > 1 && strpos($shortversion,'dev') !== false) {
     _debug('Outdated', 'Yes');$score -= 2;
   }
 
