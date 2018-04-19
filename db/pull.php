@@ -50,6 +50,7 @@ foreach ($pods as $pod) {
   $notify    = $pod['podmin_notify'];
   $masterv   = $pod['masterversion'];
   $shortv    = $pod['shortversion'];
+  $dbstatus  = $pod['status'];
 
   try {
     $ratings = R::getAll('
@@ -129,7 +130,6 @@ foreach ($pods as $pod) {
   }
 
   if ($jsonssl !== null) {
-    $status = PodStatus::Up;
 
     try {
       $c                   = R::dispense('checks');
@@ -144,6 +144,8 @@ foreach ($pods as $pod) {
     } catch (\RedBeanPHP\RedException $e) {
       die('Error in SQL query: ' . $e->getMessage());
     }
+    
+    $status = PodStatus::Up;
   }
 
   if (!$jsonssl) {
@@ -161,7 +163,6 @@ foreach ($pods as $pod) {
     }
 
     $score        -= 1;
-    $shortversion = '0.error';
     $status       = PodStatus::Down;
   }
 
@@ -276,25 +277,27 @@ foreach ($pods as $pod) {
     $p['lat']                   = $lat;
     $p['long']                  = $long;
     $p['userrating']            = $user_rating;
-    $p['shortversion']          = $shortversion;
     $p['masterversion']         = $masterversion;
-    $p['signup']                = $signup;
-    $p['total_users']           = $total_users;
-    $p['active_users_halfyear'] = $active_users_halfyear;
-    $p['active_users_monthly']  = $active_users_monthly;
-    $p['local_posts']           = $local_posts;
-    $p['name']                  = $name;
-    $p['comment_counts']        = $comment_counts;
-    $p['service_facebook']      = $service_facebook;
-    $p['service_tumblr']        = $service_tumblr;
-    $p['service_twitter']       = $service_twitter;
-    $p['service_wordpress']     = $service_wordpress;
-    $p['service_xmpp']          = $service_xmpp;
     $p['weightedscore']         = $weightedscore;
-    $p['softwarename']          = $softwarename;
     $p['sslvalid']              = $outputsslerror;
     $p['dnssec']                = $dnssec;
     $p['sslexpire']             = $sslexpire;
+    if ($dbstatus == 1 & $status = PodStatus::Up) {
+      $p['shortversion']          = $shortversion;
+      $p['signup']                = $signup;
+      $p['total_users']           = $total_users;
+      $p['active_users_halfyear'] = $active_users_halfyear;
+      $p['active_users_monthly']  = $active_users_monthly;
+      $p['local_posts']           = $local_posts;
+      $p['name']                  = $name;
+      $p['comment_counts']        = $comment_counts;
+      $p['service_facebook']      = $service_facebook;
+      $p['service_tumblr']        = $service_tumblr;
+      $p['service_twitter']       = $service_twitter;
+      $p['service_wordpress']     = $service_wordpress;
+      $p['service_xmpp']          = $service_xmpp;
+      $p['softwarename']          = $softwarename;
+    }
 
     R::store($p);
   } catch (\RedBeanPHP\RedException $e) {
