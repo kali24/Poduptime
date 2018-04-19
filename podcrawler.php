@@ -14,16 +14,5 @@ $json = json_decode($output);
 
 foreach($json->pods as $mydata) {
   $addjson = exec('php-cgi db/add.php domain='.$mydata->host);
-  echo $addjson;
-}
-
-
-
-//local json from a diaspora pod json dump /admin_panel/pod/export
-$string = file_get_contents("pods.json");
-$json_a = json_decode($string, true);
-
-foreach ($json_a as $pod => $host) {
-  $addlocal = exec('php-cgi db/add.php domain='.$host['pod']['host']);
-  echo $addlocal;
+  echo $addjson."\r\n";
 }

@@ -23,7 +23,7 @@ R::usePartialBeans(true);
 
 try {
   $sql = '
-    SELECT domain, score, date_created, adminrating, weight, hidden, podmin_notify, email, masterversion, shortversion
+    SELECT domain, score, date_created, adminrating, weight, hidden, podmin_notify, email, masterversion, shortversion, status
     FROM pods
   ';
 
