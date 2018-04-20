@@ -68,14 +68,14 @@ try {
           fill: false,
           borderColor: "#2ecc71",
           backgroundColor: "#2ecc71",
-          borderWidth: 4,
-          pointHoverRadius: 6
+          borderWidth: 2,
+          pointHoverRadius: 2
         }
         ]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: true
+        responsive: false,
+        maintainAspectRatio: false
       }
     });
   }
