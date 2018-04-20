@@ -12,9 +12,9 @@ try {
       sum(total_users) AS users,
       round(avg(uptime_alltime),2) AS uptime
     FROM pods
-    WHERE status < 4
+    WHERE status < ?
     GROUP BY softwarename
-  ');
+  ', [PodStatus::System_Deleted]);
 } catch (\RedBeanPHP\RedException $e) {
   die('Error in SQL query: ' . $e->getMessage());
 }

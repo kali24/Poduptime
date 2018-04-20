@@ -233,6 +233,7 @@ foreach ($pods as $pod) {
   $masterversioncheck = explode('.',$masterversion);
   $shortversioncheck = explode('.',$shortversion);
   if (($masterversioncheck[1] - $shortversioncheck[1]) > 1 && strpos($shortversion,'dev') !== false) {
+    //dev search added to address frendica using very odd versioning for dev code, we should look to pull dev versions and use them rather than assume dev is always ahead of prod code
     _debug('Outdated', 'Yes');$score -= 2;
   }
 
